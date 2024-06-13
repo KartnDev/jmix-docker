@@ -1,0 +1,31 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=toor
+      - POSTGRES_DB=jmixdocker
+    networks:
+      - my_network
+  jmix-docker:
+    image: jmix-docker:0.0.1-SNAPSHOT
+    container_name: jmix-docker
+    environment:
+      - JAVA_TOOL_OPTIONS=-Xms724m -Xmx1548m -XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=40
+      - BPL_JVM_THREAD_COUNT=100
+    networks:
+      - my_network
+    deploy:
+      resources:
+        limits:
+          memory: 3g
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+
+networks:
+  my_network:
+    driver: bridge
